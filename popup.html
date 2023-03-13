@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube search bar blur</title>
+    <style>
+        html,body{
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12px;
+            margin:0;
+            min-height: 109px;
+            padding: 0;
+            width: 180px;
+        }
+        form{
+
+            position: relative; text-align: center; top: -10px;
+            font-size: 18px;
+        }
+        img{
+            width: 40px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="css/button.css"/>
+</head>
+
+<body>
+<div style="display: flex; justify-content: space-between; width: 100px; align-items: center;">
+    <div class ="modal-header">
+        <h1 class ="logo" style="position: relative; left: 15px">
+            <img src="images/icon_48.png" alt="icon" >
+        </h1>
+    </div>
+
+<label class="switch" style="position: relative; left: 60px;">
+    <input class="switch-input" type="checkbox" id="hideVideos" checked>
+    <span class="switch-label" data-on="On" data-off="Off"></span>
+    <span class="switch-handle"></span>
+</label>
+
+</div>
+<script type="module" src="hideSuggestedVideos.js"></script>
+<form>
+    make me productive!
+</form>
+</body>
+</html>

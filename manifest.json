@@ -1,0 +1,69 @@
+{
+  "name": "YouTube search bar blur",
+  "description": "Makes blur the entire web except the search bar, that makes you be more productive.",
+  "version": "1.0",
+  "manifest_version": 3,
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["css/button.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "images/icon_16.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
+  },
+  "author": "snir-matuf",
+  "action": {
+    "default_icon":  "images/icon_16.png",
+    "default_title": "YouTube search bar blur",
+    "default_popup": "popup.html"
+  },
+  "externally_connectable": {
+    "matches": ["https://*.www.youtube.com/*"]
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/",
+    "https://*/*"
+  ],
+  "web_accessible_resources": [{
+    "resources": ["css/button.css"],
+    "matches": ["<all_urls>"],
+    "use_dynamic_url": true
+    }
+],
+  "content_security_policy": {
+    "default-src": "https:",
+    "extension_pages": "default-src 'self';img-src 'self' chrome-extension://* images/; style-src 'self' 'unsafe-inline' chrome-extension://* css/; script-src 'self'; font-src 'self'; base-uri; form-action 'self'"
+  },
+  "sandbox": {
+    "pages": [
+      "https://www.youtube.com/"
+    ],
+    "allow-scripts": true,
+    "allow-forms": true,
+    "allow-popups": true,
+    "allow-modals": false,
+    "allow-top-navigation": false,
+    "allow-popups-to-escape-sandbox": false,
+    "allow-pointer-lock": false,
+    "allow-same-origin": false,
+    "allow-storage-access-by-user-activation": false,
+    "allow-downloads": false
+  }
+
+}
+
+
