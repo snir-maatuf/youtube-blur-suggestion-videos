@@ -1,64 +1,91 @@
-
 // Initialize parts as variable
 const mainSection = document.querySelectorAll("ytd-rich-item-renderer");
 const videos = document.querySelectorAll("ytd-rich-grid-media");
 const shorts = document.querySelectorAll("ytd-rich-grid-slim-media");
 const ad = document.querySelectorAll("ytd-display-ad-renderer");
 
+// Function to apply blur on videos
+let applyBlur = (videoElements) => {
+    videoElements.forEach((element) => {
+        element.style.pointerEvents = "none";
+        element.style.textDecoration = "none";
+        element.style.filter = "blur(10px)";
+    });
+};
 
-// Blur this Values
-let hideAllVideos = function () {
+// Function to remove blur from videos
+let removeBlur = (videoElements) => {
+    videoElements.forEach((element) => {
+        element.style.pointerEvents = "auto";
+        element.style.textDecoration = "initial";
+        element.style.filter = "blur(0px)";
+    });
+};
+
+// Blur all videos
+let hideAllVideos = () => {
     if (ad.length > 0){
         ad[0].style.pointerEvents = "none";
         ad[0].style.textDecoration = "none";
         ad[0].style.filter = "blur(10px)";
     }
     // Prevent "cacmologim" from clicking on videos
-    for ( let i = 0; i < mainSection.length; i++) {
-        mainSection[i].style.cursor = "not-allowed";
-    }
+    mainSection.forEach((element) => {
+        element.style.cursor = "not-allowed";
+    });
 
-    // Video part
-    for ( let i = 0; i < videos.length; i++) {
-        videos[i].style.pointerEvents = "none";
-        videos[i].style.textDecoration = "none";
-        videos[i].style.filter = "blur(10px)";
-    }
-    // Shorts part
-    for ( let i = 0; i < shorts.length; i++) {
-        shorts[i].style.pointerEvents = "none";
-        shorts[i].style.textDecoration = "none";
-        shorts[i].style.filter = "blur(10px)";
-    }
-}
+    applyBlur(mainSection);
+    applyBlur(videos);
+    applyBlur(shorts);
+};
+
 // "Turn ON" the blur on content
-let blurON = function () {
+const blurON = () => {
     hideAllVideos();
-}
-let blurOFF = function () {
+};
+
+// "Turn OFF" the blur on content
+const blurOFF = () => {
     if (ad.length > 0){
         ad[0].style.pointerEvents = "auto";
         ad[0].style.textDecoration = "initial";
         ad[0].style.filter = "blur(0px)";
     }
-    for ( let i = 0; i < mainSection.length; i++) {
-        mainSection[i].style.cursor = "default";
+    removeBlur(mainSection);
+    removeBlur(videos);
+    removeBlur(shorts);
+    
+    if (unblurNewVideos) {
+        const newVideos = document.querySelectorAll("ytd-rich-grid-media, ytd-rich-grid-slim-media");
+        removeBlur(newVideos);
     }
-    for ( let i = 0; i < videos.length; i++) {
-        videos[i].style.pointerEvents = "auto";
-        videos[i].style.textDecoration = "initial";
-        videos[i].style.filter = "blur(0px)";
-    }
-    for ( let i = 0; i < shorts.length; i++) {
-        shorts[i].style.pointerEvents = "auto";
-        shorts[i].style.textDecoration = "initial";
-        shorts[i].style.filter = "blur(0px)";
-    }
-}
+};
 
 
-let init = function () {
-    chrome.storage.sync.get("hide", function (data) {
+
+// Initialize MutationObserver to watch for changes in the DOM
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes) {
+            // New nodes added, check if they are videos and apply blur
+            const newVideos = [];
+            mutation.addedNodes.forEach((node) => {
+                if (node.matches && (node.matches("ytd-rich-grid-media") || node.matches("ytd-rich-grid-slim-media"))) {
+                    newVideos.push(node);
+                }
+            });
+            if (newVideos.length > 0) {
+                applyBlur(newVideos);
+            }
+        }
+    });
+});
+
+// Observe changes in the entire document subtree
+observer.observe(document, { childList: true, subtree: true });
+
+const init = () => {
+    chrome.storage.sync.get("hide", (data) => {
         if (data.hide) {
             blurON();
         } else {
@@ -67,8 +94,8 @@ let init = function () {
     });
 };
 
-//Incoming message from popup
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+// Incoming message from popup
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.command === "hideVids") {
         blurON();
     } else if (request.command === "showVids") {
@@ -79,12 +106,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     sendResponse({ result: "success" });
 });
 
-window.addEventListener("load", (event) => {
+window.addEventListener("load", () => {
     init();
 });
-
-window.addEventListener("scroll", () => {
-    init();
-});
-
 
