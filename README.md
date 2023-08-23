@@ -22,3 +22,5 @@ User's have **switch to on/off** the extansion every moment.
 * Select the "extract folder" (youtube-blur-suggestion-videos)
 
 and... Done ! hope you like it
+
+<img src="https://t.bkit.co/w_64e60f64e5371.gif" />
