@@ -3,6 +3,7 @@ const mainSection = document.querySelectorAll("ytd-rich-item-renderer");
 const videos = document.querySelectorAll("ytd-rich-grid-media");
 const shorts = document.querySelectorAll("ytd-rich-grid-slim-media");
 const ad = document.querySelectorAll("ytd-display-ad-renderer");
+var isBlurOn = false;
 
 // Function to apply blur on videos
 let applyBlur = (videoElements) => {
@@ -41,6 +42,7 @@ let hideAllVideos = () => {
 
 // "Turn ON" the blur on content
 const blurON = () => {
+    isBlurOn = true;
     hideAllVideos();
 };
 
@@ -55,10 +57,11 @@ const blurOFF = () => {
     removeBlur(videos);
     removeBlur(shorts);
     
-    if (unblurNewVideos) {
+    if (isBlurOn) {
         const newVideos = document.querySelectorAll("ytd-rich-grid-media, ytd-rich-grid-slim-media");
         removeBlur(newVideos);
     }
+    isBlurOn = false;
 };
 
 
@@ -96,12 +99,12 @@ const init = () => {
 
 // Incoming message from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.command === "hideVids") {
+    if (request.command === "init") {
+        init();
+    } else if (request.command === "hideVids") {
         blurON();
     } else if (request.command === "showVids") {
         blurOFF();
-    } else {
-        init();
     }
     sendResponse({ result: "success" });
 });
