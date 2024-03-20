@@ -14,7 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     tabs[0].id,
                     { command: "hideVids", hide: value }, // message to be sent
                     function (response) {
-                        console.log(response.result);
+                        if (response && response.result) {
+                            console.log(response.result);
+                        } else {
+                            console.log("Error: Unable to handle response.");
+                        }
                     }
                 );
             });
@@ -24,7 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     tabs[0].id,
                     { command: "showVids", hide: value }, // message to be sent
                     function (response) {
-                        console.log(response.result);
+                        if (response && response.result) {
+                            console.log(response.result);
+                        } else {
+                            console.log("Error: Unable to handle response.");
+                        }
                     }
                 );
             });
